@@ -13,7 +13,7 @@ def human_step(game_table):
         step_number = input('Введи номер элемента - ', )
         try:
             if int(step_number) < 10:
-                game_table[0][int(a)] = 'X'
+                game_table[0][int(step_number)] = 'X'
             elif int(step_number) > 99:
                 print('Введите число от 0 до 99')
             else:
@@ -24,7 +24,8 @@ def human_step(game_table):
             print('А где же число?')
             continue
         print(*game_table, sep='\n')
-        computer_step(game_table)
+        return game_table
+        # computer_step(game_table)
 
 
 def computer_step(game_table):
@@ -45,7 +46,7 @@ def computer_step(game_table):
         else:
             game_table[coordinat_step[0]][coordinat_step[1]] = 'O'
     print(*game_table, sep='\n')
-    human_step(game_table)
+    return game_table
 
 
 def start_game():
@@ -56,9 +57,9 @@ def start_game():
         game_table.append(list_game_numbers[i:i + 10])
         i += 10
     print(*game_table, sep='\n')
-    human_step(game_table)
-
-
+    while True:
+        game_table = human_step(game_table)
+        game_table = computer_step(game_table)
 start_game()
 
 
