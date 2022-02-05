@@ -4,16 +4,24 @@ Computer_steps = set()
 Human_steps = set()
 
 
+
+
 def loss_check(step, gamer):
+
     def gen_horizontal(step):
+        """Функция получает проигрышную горизонтальную комбинацию в зависимости от номера шага."""
+
         horizontal = {i for i in range(step - 4, step + 5) if i // 10 == step // 10}
         return horizontal
 
     def gen_vert(step):
+        """Функция получает проигрышную вертикальную комбинацию в зависимости от номера шага."""
         vertical = {i for i in range(step - 4 * 10, step + 5 * 10, 10) if 0 <= i < 100}
         return vertical
 
     def gen_diagonal1(step):
+        """Функция получает проигрышную диагональную комбинацию (от верхнего левого угла к правому
+        нижнему в зависимости от номера шага."""
         diagonal_tl_br = [i for i in range(step - 4 * 11, step + 5 * 11, 11) if 0 <= i < 100]
         if step % 10 == 0:
             start = diagonal_tl_br.index(step)
@@ -28,6 +36,8 @@ def loss_check(step, gamer):
         return set(diagonal_tl_br)
 
     def gen_diagonal2(step):
+        """Функция получает проигрышную диагональную комбинацию (от верхнего правого угла к левому
+               нижнему в зависимости от номера шага."""
         diagonal_rt_bl = [i for i in range(step - 4 * 9, step + 5 * 9, 9) if 0 <= i < 100]
         start = 0
         for i in diagonal_rt_bl:
@@ -44,41 +54,24 @@ def loss_check(step, gamer):
         return set(diagonal_rt_bl)
 
     def game_over(steps, line, looser):
-        # print(looser, ' steps - ', steps)
-        # print('Looser line - ', line)
-        # print(steps & line)
         if len(steps & line) == 5:
-            print('Game over ', looser)
+            print('Игра закончена. Проиграл - ', looser)
             sys.exit()
 
     if gamer == 'computer':
         Computer_steps.add(step)
 
-        horizontel = gen_horizontal(step)
-        vertical = gen_vert(step)
-        diagonal1 = gen_diagonal1(step)
-        diagonal2 = gen_diagonal2(step)
+        game_over(Computer_steps, gen_horizontal(step), gamer)
+        game_over(Computer_steps, gen_vert(step), gamer)
+        game_over(Computer_steps, gen_diagonal1(step), gamer)
+        game_over(Computer_steps, gen_diagonal2(step), gamer)
 
-        # print(horizontel, vertical, diagonal2, diagonal1)
-
-        game_over(Computer_steps, horizontel, gamer)
-        game_over(Computer_steps, vertical, gamer)
-        game_over(Computer_steps, diagonal2, gamer)
-        game_over(Computer_steps, diagonal1, gamer)
-
-        # print('Функция loss_check computer', Computer_steps)
     else:
         Human_steps.add(step)
-        horizontel = gen_horizontal(step)
-        vertical = gen_vert(step)
-        diagonal1 = gen_diagonal1(step)
-        diagonal2 = gen_diagonal2(step)
-        # print(horizontel, vertical, diagonal2, diagonal1)
-
-        game_over(Human_steps, horizontel, gamer)
-        game_over(Human_steps, vertical, gamer)
-        game_over(Human_steps, diagonal2, gamer)
-        game_over(Human_steps, diagonal1, gamer)
+        game_over(Human_steps, gen_horizontal(step), gamer)
+        game_over(Human_steps, gen_vert(step), gamer)
+        game_over(Human_steps, gen_diagonal1(step), gamer)
+        game_over(Human_steps, gen_diagonal2(step), gamer)
 
 
 def human_step(game_table):
@@ -91,7 +84,6 @@ def human_step(game_table):
         human_step(game_table)
 
     valid_step(step, game_table, gamer='human')
-    # print(*game_table, sep='\n')
     print('_' * 75)
     return game_table
 
@@ -102,39 +94,32 @@ def computer_step(game_table):
     step = random.randint(0, 100)
     print('Компьютер выбрал номер - ', step)
     valid_step(step, game_table, gamer='computer')
-    # print(*game_table, sep='\n')
     print('_' * 75)
     return game_table
 
 
 def valid_step(step, game_table, gamer):
-    # x_step = ''
-    # y_step = ''
     if step < 10:
-        if game_table[0][step] in ('X', 'O'):
+        if game_table[0][step] in ('X ', 'O '):
             print('Этот номер уже занят, попробуй другой')
             if gamer == 'computer':
                 computer_step(game_table)
             else:
                 human_step(game_table)
         else:
-            # x_step = 0
-            # y_step = step
             if gamer == 'computer':
-                game_table[0][step] = 'O'
+                game_table[0][step] = 'O '
             else:
-                game_table[0][step] = 'X'
+                game_table[0][step] = 'X '
     else:
         coordinat_step = [int(x) for x in str(step)]
-        if game_table[coordinat_step[0]][coordinat_step[1]] in ('X', 'O'):
+        if game_table[coordinat_step[0]][coordinat_step[1]] in ('X ', 'O '):
             print('Этот номер уже занят, попробуй другой')
             if gamer == 'computer':
                 computer_step(game_table)
             else:
                 human_step(game_table)
         else:
-            # x_step = coordinat_step[0]
-            # y_step = coordinat_step[1]
             if gamer == 'computer':
                 game_table[coordinat_step[0]][coordinat_step[1]] = 'O '
             else:
@@ -152,13 +137,17 @@ def draw_table(game_table):
 
 
 def start_game():
+    print(
+'''Добро пожаловать в игру обратные крестики-нолики!
+Здесь тебе предстоить как можно дольше продержаться не 
+собрав 5 в ряд по ветикали, горизонтали, диагонали.
+Играть предстоит против компьютера. Желаю тебе удачи''')
     list_game_numbers = [str(x) for x in range(100)]
     game_table = []
     i = 0
     for j in range(10):
         game_table.append(list_game_numbers[i:i + 10])
         i += 10
-    # print(*game_table, sep='\n')
     while True:
         draw_table(game_table)
         game_table = human_step(game_table)
