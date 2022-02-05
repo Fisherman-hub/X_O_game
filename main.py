@@ -44,9 +44,9 @@ def loss_check(step, gamer):
         return set(diagonal_rt_bl)
 
     def game_over(steps, line, looser):
-        print(looser, ' steps - ', steps)
-        print('Looser line - ', line)
-        print(steps & line)
+        # print(looser, ' steps - ', steps)
+        # print('Looser line - ', line)
+        # print(steps & line)
         if len(steps & line) == 5:
             print('Game over ', looser)
             sys.exit()
@@ -59,21 +59,21 @@ def loss_check(step, gamer):
         diagonal1 = gen_diagonal1(step)
         diagonal2 = gen_diagonal2(step)
 
-        print(horizontel, vertical, diagonal2, diagonal1)
+        # print(horizontel, vertical, diagonal2, diagonal1)
 
         game_over(Computer_steps, horizontel, gamer)
         game_over(Computer_steps, vertical, gamer)
         game_over(Computer_steps, diagonal2, gamer)
         game_over(Computer_steps, diagonal1, gamer)
 
-        print('Функция loss_check computer', Computer_steps)
+        # print('Функция loss_check computer', Computer_steps)
     else:
         Human_steps.add(step)
         horizontel = gen_horizontal(step)
         vertical = gen_vert(step)
         diagonal1 = gen_diagonal1(step)
         diagonal2 = gen_diagonal2(step)
-        print(horizontel, vertical, diagonal2, diagonal1)
+        # print(horizontel, vertical, diagonal2, diagonal1)
 
         game_over(Human_steps, horizontel, gamer)
         game_over(Human_steps, vertical, gamer)
@@ -84,11 +84,14 @@ def loss_check(step, gamer):
 def human_step(game_table):
     try:
         step = int(input('Введи номер элемента - ', ))
+        if step not in range(0, 100):
+            raise ValueError
     except ValueError:
         print('Введите число от 0 до 99')
         human_step(game_table)
+
     valid_step(step, game_table, gamer='human')
-    print(*game_table, sep='\n')
+    # print(*game_table, sep='\n')
     print('_' * 75)
     return game_table
 
@@ -99,14 +102,14 @@ def computer_step(game_table):
     step = random.randint(0, 100)
     print('Компьютер выбрал номер - ', step)
     valid_step(step, game_table, gamer='computer')
-    print(*game_table, sep='\n')
+    # print(*game_table, sep='\n')
     print('_' * 75)
     return game_table
 
 
 def valid_step(step, game_table, gamer):
-    x_step = ''
-    y_step = ''
+    # x_step = ''
+    # y_step = ''
     if step < 10:
         if game_table[0][step] in ('X', 'O'):
             print('Этот номер уже занят, попробуй другой')
@@ -115,8 +118,8 @@ def valid_step(step, game_table, gamer):
             else:
                 human_step(game_table)
         else:
-            x_step = 0
-            y_step = step
+            # x_step = 0
+            # y_step = step
             if gamer == 'computer':
                 game_table[0][step] = 'O'
             else:
@@ -130,14 +133,22 @@ def valid_step(step, game_table, gamer):
             else:
                 human_step(game_table)
         else:
-            x_step = coordinat_step[0]
-            y_step = coordinat_step[1]
+            # x_step = coordinat_step[0]
+            # y_step = coordinat_step[1]
             if gamer == 'computer':
-                game_table[coordinat_step[0]][coordinat_step[1]] = 'O'
+                game_table[coordinat_step[0]][coordinat_step[1]] = 'O '
             else:
-                game_table[coordinat_step[0]][coordinat_step[1]] = 'X'
+                game_table[coordinat_step[0]][coordinat_step[1]] = 'X '
     loss_check(step, gamer)
     return game_table
+
+
+def draw_table(game_table):
+    for number_line in range(len(game_table)):
+        if number_line == 0:
+            print(*game_table[number_line], sep='  | ', end='  |\n')
+        else:
+            print(*game_table[number_line], sep=' | ', end=' |\n')
 
 
 def start_game():
@@ -147,8 +158,9 @@ def start_game():
     for j in range(10):
         game_table.append(list_game_numbers[i:i + 10])
         i += 10
-    print(*game_table, sep='\n')
+    # print(*game_table, sep='\n')
     while True:
+        draw_table(game_table)
         game_table = human_step(game_table)
         game_table = computer_step(game_table)
 
