@@ -1,10 +1,10 @@
 import sys
 
-Computer_steps = set()
-Human_steps = set()
+computer_steps = set()
+human_steps = set()
 
-
-
+CROSS = 'X'
+ZERO = 'O'
 
 def loss_check(step, gamer):
 
@@ -59,19 +59,20 @@ def loss_check(step, gamer):
             sys.exit()
 
     if gamer == 'computer':
-        Computer_steps.add(step)
+        computer_steps.add(step)
 
-        game_over(Computer_steps, gen_horizontal(step), gamer)
-        game_over(Computer_steps, gen_vert(step), gamer)
-        game_over(Computer_steps, gen_diagonal1(step), gamer)
-        game_over(Computer_steps, gen_diagonal2(step), gamer)
+
+        game_over(computer_steps, gen_horizontal(step), gamer)
+        game_over(computer_steps, gen_vert(step), gamer)
+        game_over(computer_steps, gen_diagonal1(step), gamer)
+        game_over(computer_steps, gen_diagonal2(step), gamer)
 
     else:
-        Human_steps.add(step)
-        game_over(Human_steps, gen_horizontal(step), gamer)
-        game_over(Human_steps, gen_vert(step), gamer)
-        game_over(Human_steps, gen_diagonal1(step), gamer)
-        game_over(Human_steps, gen_diagonal2(step), gamer)
+        human_steps.add(step)
+        game_over(human_steps, gen_horizontal(step), gamer)
+        game_over(human_steps, gen_vert(step), gamer)
+        game_over(human_steps, gen_diagonal1(step), gamer)
+        game_over(human_steps, gen_diagonal2(step), gamer)
 
 
 def human_step(game_table):
@@ -100,7 +101,7 @@ def computer_step(game_table):
 
 def valid_step(step, game_table, gamer):
     if step < 10:
-        if game_table[0][step] in ('X ', 'O '):
+        if game_table[0][step] in (CROSS, ZERO):
             print('Этот номер уже занят, попробуй другой')
             if gamer == 'computer':
                 computer_step(game_table)
@@ -108,12 +109,12 @@ def valid_step(step, game_table, gamer):
                 human_step(game_table)
         else:
             if gamer == 'computer':
-                game_table[0][step] = 'O '
+                game_table[0][step] = f'\033[34m{ZERO}\033[37m'
             else:
-                game_table[0][step] = 'X '
+                game_table[0][step] = f'\033[31m{CROSS}\033[37m'
     else:
         coordinat_step = [int(x) for x in str(step)]
-        if game_table[coordinat_step[0]][coordinat_step[1]] in ('X ', 'O '):
+        if game_table[coordinat_step[0]][coordinat_step[1]] in (CROSS, ZERO):
             print('Этот номер уже занят, попробуй другой')
             if gamer == 'computer':
                 computer_step(game_table)
@@ -121,9 +122,10 @@ def valid_step(step, game_table, gamer):
                 human_step(game_table)
         else:
             if gamer == 'computer':
-                game_table[coordinat_step[0]][coordinat_step[1]] = 'O '
+                # f'{} присваивается переменной, чтобы таблица не плыла при игре
+                game_table[coordinat_step[0]][coordinat_step[1]] = f'\033[34m{ZERO}\033[37m '
             else:
-                game_table[coordinat_step[0]][coordinat_step[1]] = 'X '
+                game_table[coordinat_step[0]][coordinat_step[1]] = f'\033[31m{CROSS}\033[37m '
     loss_check(step, gamer)
     return game_table
 
@@ -131,9 +133,12 @@ def valid_step(step, game_table, gamer):
 def draw_table(game_table):
     for number_line in range(len(game_table)):
         if number_line == 0:
+            print('\033[37m_' * 50)
             print(*game_table[number_line], sep='  | ', end='  |\n')
+            print("\033[37m"'_'*50)
         else:
             print(*game_table[number_line], sep=' | ', end=' |\n')
+            print('\033[37m_' * 50)
 
 
 def start_game():
@@ -141,7 +146,7 @@ def start_game():
 '''Добро пожаловать в игру обратные крестики-нолики!
 Здесь тебе предстоить как можно дольше продержаться не 
 собрав 5 в ряд по ветикали, горизонтали, диагонали.
-Играть предстоит против компьютера. Желаю тебе удачи''')
+Играть предстоит против компьютера. Желаю тебе удачи''' , end='\n'*3)
     list_game_numbers = [str(x) for x in range(100)]
     game_table = []
     i = 0

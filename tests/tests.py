@@ -64,4 +64,8 @@ assert generation(72) == {70, 71, 72, 73, 74, 75, 76}
 assert generation(99) == {99, 98, 97, 96, 95}
 assert generation(0) == {0, 1, 2, 3, 4}
 
+print('\033[31m{}'.format('text'))
+a = [1, 2, 3, 4]
 
+for i in :
+    if
