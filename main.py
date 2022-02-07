@@ -58,19 +58,17 @@ def loss_check(step, gamer):
             print('Игра закончена. Проиграл - ', looser)
             sys.exit()
 
+    moves = {'computer': computer_steps, 'human': human_steps}
+
     if gamer == 'computer':
         computer_steps.add(step)
-        dict_step = {gamer: computer_steps}
         for combination in (gen_vert(step), gen_horizontal(step), gen_diagonal1(step), gen_diagonal2(step)):
-            key = str(list(dict_step.keys())[0])
-            game_over(dict_step[key], combination, key)
+            game_over(moves[gamer], combination, gamer)
 
     else:
         human_steps.add(step)
-        dict_step = {gamer: human_steps}
         for combination in (gen_vert(step), gen_horizontal(step), gen_diagonal1(step), gen_diagonal2(step)):
-            key = str(list(dict_step.keys())[0])
-            game_over(dict_step[key], combination, key)
+            game_over(moves[gamer], combination, gamer)
 
 def human_step(game_table):
     try:
